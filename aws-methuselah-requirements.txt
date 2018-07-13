@@ -1,0 +1,15 @@
+appdirs==1.4.3
+boto3==1.4.4
+botocore==1.5.78
+docutils==0.13.1
+futures==3.1.1
+jmespath==0.9.3
+jq==0.1.6
+packaging==16.8
+pip-review==0.5.3
+pyparsing==2.2.0
+python-dateutil==2.6.0
+pytz==2017.2
+s3transfer==0.1.10
+six==1.10.0
+tabulate==0.7.7
