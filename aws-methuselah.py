@@ -37,11 +37,11 @@ ignoredInstances = [
 ]
 
 ignoredTags = [
-    'ignoreMe',         # Add instance tags that should be ignored here
+    'ignoreMeTag',         # Add instance tags that should be ignored here
 ]
 
 ignoredStacks = [
-    'errbit-utm',       # Add stacks that should be ignored here
+    'ignore-stack-1',       # Add stacks that should be ignored here
 ]
 
 priceList={}
