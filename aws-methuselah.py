@@ -31,16 +31,16 @@ defaultCostNotificationThreshold = defaultInstanceMaxAge * 5
 
 defaultRegion = "all"
 
-# Blacklisted instances
-blacklistedInstances = [
-    'i-00000000',		# Add EC2 instance IDs that should be blacklisted here
+# Ignored instances
+ignoredInstances = [
+    'i-00000000',		# Add EC2 instance IDs that should be ignored here
 ]
 
-blacklistedTags = [
+ignoredTags = [
     'ignoreMe',         # Add instance tags that should be ignored here
 ]
 
-backlistedStacks = [
+ignoredStacks = [
     'errbit-utm',       # Add stacks that should be ignored here
 ]
 
@@ -96,7 +96,7 @@ now = datetime.now(utc)
 past = now + timedelta(days=-instanceMaxAge)
 
 costSum = 0
-totalBlacklistedInstances = 0
+totalignoredInstances = 0
 totalInstances = 0
 resultTable = []
 
@@ -139,8 +139,8 @@ for region in regions:
     totalInstances += len(filteredInstances)
 
     for instance in filteredInstances:
-        if instance.id in blacklistedInstances:
-            totalBlacklistedInstances += 1
+        if instance.id in ignoredInstances:
+            totalignoredInstances += 1
             continue
         else:
             if len(instance.id) > 10:
@@ -185,14 +185,14 @@ for region in regions:
                 else:
                     stackName = stackNameTag[0]
 
-            # Check if name contains blacklisted instance tag
-            if any(tag in name for name in [instanceName, stackName] for tag in blacklistedTags):
-                totalBlacklistedInstances += 1
+            # Check if name contains ignored instance tag
+            if any(tag in name for name in [instanceName, stackName] for tag in ignoredTags):
+                totalignoredInstances += 1
                 continue
 
-            # Check if instance is part of a blacklisted stack
-            if stackName in backlistedStacks:
-                totalBlacklistedInstances += 1
+            # Check if instance is part of a ignored stack
+            if stackName in ignoredStacks:
+                totalignoredInstances += 1
                 continue
 
             # Determine run time
@@ -223,8 +223,8 @@ if (len(resultTable) > 0):
     print ""
     print tabulate(resultTable, headers=["ID", "Instance Name", "Stack Name", "VPC Name/ID", "Region", "Size", "Created on", "no-del", "Costs"])
     print ""
-    print "%d running instances found (of which %d are blacklisted)." % (totalInstances, totalBlacklistedInstances)
-    print "Running costs since creation: $%.2f. " % costSum
+    print "%d running instances found (of which %d are ignored)." % (totalInstances, totalignoredInstances)
+    print "(Estimated) running costs since creation: $%.2f. " % costSum
 
     if (costSum > costNotificationThreshold):
         sys.exit(1)
@@ -232,5 +232,5 @@ if (len(resultTable) > 0):
         print "Costs are below notification threshold ($%d)." % (costNotificationThreshold)
         sys.exit(0)
 else:
-    print "All clear (none found; %d running instances were blacklisted)." % totalBlacklistedInstances
+    print "All clear (none found; %d running instances were ignored)." % totalignoredInstances
     sys.exit(0)
