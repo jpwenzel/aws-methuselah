@@ -6,9 +6,6 @@
 # List long running AWS instances.
 
 import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
-
 from datetime import tzinfo, timedelta, datetime
 import boto3
 import pytz
@@ -103,15 +100,15 @@ resultTable = []
 # ----------------------------------------------------------------------------
 # Query AWS for EC2 instances
 # ----------------------------------------------------------------------------
-print "Looking for EC2 instances created > %d days ago..." % (instanceMaxAge)
-print "Cost notification threshold set to $%d." % (costNotificationThreshold)
+print('Looking for EC2 instances created > {0} days ago...'.format(instanceMaxAge))
+print('Cost notification threshold set to ${0:.2f}'.format(costNotificationThreshold))
 
 if not args.awsprofile:
     awsProfile = None
     session = boto3.session.Session()
 else:
     awsProfile = args.awsprofile
-    print "Using account %s" % awsProfile
+    print('Using account {0}'.format(awsProfile))
     session = boto3.session.Session(profile_name="%s" % awsProfile)
 
 if args.region:
@@ -126,7 +123,7 @@ for region in regions:
     else:
         ec2RegionalSession = boto3.session.Session(region_name=region)
     ec2 = ec2RegionalSession.resource('ec2')
-    print "Checking region '%s'…" % region,
+    print('Checking region \'{0}\''.format(region))
 
     instances = ec2.instances.filter(
         Filters=[{'Name': 'instance-state-name', 'Values': ['pending', 'running']}])
@@ -135,7 +132,7 @@ for region in regions:
     filteredInstances = [
         instance for instance in instances
         if instance.launch_time <= past]
-    print "%d instance(s) found." % len(filteredInstances)
+    print('{0} instance(s) found.'.format(len(filteredInstances)))
     totalInstances += len(filteredInstances)
 
     for instance in filteredInstances:
@@ -220,17 +217,17 @@ for region in regions:
 # Output results
 # ----------------------------------------------------------------------------
 if (len(resultTable) > 0):
-    print ""
-    print tabulate(resultTable, headers=["ID", "Instance Name", "Stack Name", "VPC Name/ID", "Region", "Size", "Created on", "no-del", "Costs"])
-    print ""
-    print "%d running instances found (of which %d are ignored)." % (totalInstances, totalignoredInstances)
-    print "(Estimated) running costs since creation: $%.2f. " % costSum
+    print('\n')
+    print(tabulate(resultTable, headers=["ID", "Instance Name", "Stack Name", "VPC Name/ID", "Region", "Size", "Created on", "no-del", "Costs"]))
+    print('\n')
+    print('{0} running instances found (of which {1} are ignored).'.format(totalInstances, totalignoredInstances))
+    print('(Estimated) running costs since creation: {0:.2f}.'.format(costSum))
 
     if (costSum > costNotificationThreshold):
         sys.exit(1)
     else:
-        print "Costs are below notification threshold ($%d)." % (costNotificationThreshold)
+        print('Costs are below notification threshold (${0:.2f}).'.format(costNotificationThreshold))
         sys.exit(0)
 else:
-    print "All clear (none found; %d running instances were ignored)." % totalignoredInstances
+    print('All clear (none found; {0}} running instances were ignored).'.format(totalignoredInstances))
     sys.exit(0)

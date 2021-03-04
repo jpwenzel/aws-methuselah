@@ -2,11 +2,6 @@
 #
 # aws-methuselah.sh
 
-virtualenv env
+pipenv install
 
-# shellcheck disable=SC1091
-source env/bin/activate
-
-pip install -r aws-methuselah-requirements.txt
-
-python aws-methuselah.py "$@"
+pipenv run python3 aws-methuselah.py "$@"
