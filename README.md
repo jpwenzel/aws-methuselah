@@ -1,6 +1,6 @@
 # aws-methuselah
 
-**aws-methuselah** is a Python script to check for "old" instances running in AWS, summarizing their total runtime costs since creation.
+**aws-methuselah** is a Python script to check for "old" (as in "long-running") instances running in AWS, summarizing their total runtime costs since creation.
 
 ## Download
 
@@ -8,7 +8,7 @@
 
 ## Pre-requisites
 
-```aws-methuselah``` runs on Python 2.x and needs ```virtualenv``` and ```pip``` to be installed. Python requirements will be checked (and installed if missing) before execution.
+```aws-methuselah``` runs on Python 3.x and needs ```pipenv``` to be installed. Python requirements will be checked (and installed if missing) before execution.
 
 ## Usage
 
